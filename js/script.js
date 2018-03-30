@@ -39,7 +39,7 @@ new Vue ({
       }
   },
   created: function () {
-    this.getPictures ( '../json/fones.json', 'fones' )
-    this.getPictures ( '../json/personages.json', 'personages' )
+    this.getPictures ( 'json/fones.json', 'fones' )
+    this.getPictures ( 'json/personages.json', 'personages' )
   }
 }).$mount("#vueApp")
