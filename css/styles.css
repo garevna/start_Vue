@@ -1,0 +1,53 @@
+.navi {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  bottom: 0;
+  z-index:200;
+}
+.aside {
+  position: absolute;
+  height:90%;
+  box-shadow: 5px 5px 10px #00000080;
+  background-color: #fff;
+  padding: 0 5px 5px;
+  transition: all 0.5s;
+  overflow-Y:auto;
+}
+.aside-enter, .aside-leave-to {
+  opacity:0;
+  transform:translate(-100%);
+}
+.foneIco {
+  display: block;
+  margin-top:5px;
+  max-width:70px;
+}
+
+.figure {
+  position: absolute;
+  top:5%;
+  left:0;
+  bottom:0;
+  right:0;
+  background-image: url();
+  background-size: cover;
+  background-repeat:no-repeat;
+  background-position: center center;
+}
+.personage {
+  position:absolute;
+  transition: all 2s;
+  height: 100px;
+  top:0;
+  left:0;
+}
+
+.personages-leave-active {
+  position: absolute;
+}
+
+.personages-leave-to, .personages-enter {
+  opacity: 0;
+  transform: translateX(-80px);
+}

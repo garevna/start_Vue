@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src ='https://unpkg.com/vue'></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+  </head>
+
+  <body>
+    <main id = "vueApp">
+      <nav class = "navi">
+        <button @click = "showAside = !showAside">&#9776;</button>
+        <transition name = "aside">
+            <aside class = "aside" v-if = "showAside">
+                <img  v-for = "( item, index ) in fones"
+                      :src = "item"
+                      :key = "index"
+                      class = "foneIco"
+                      @click = "setBack">
+            </aside>
+        </transition>
+
+      </nav>
+      <figure class = "figure"
+              :style = '{ backgroundImage: currentBack }'>
+        <transition-group name = "personages">
+          <img  v-for = "item in personages"
+                :key = "item.url"
+                :src = "item.url"
+                class = "personage"
+                :style = "{ top: item.y, left: item.x }"
+                @click = "changeOrder()">
+        </transition-group>
+      </figure>
+
+
+    </main>
+
+    <script src="js/script.js"></script>
+  </body>
+
+</html>
