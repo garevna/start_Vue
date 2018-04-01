@@ -9,7 +9,7 @@ new Vue ({
   },
   methods: {
       randomX: function () {
-          return Math.max ( 10, Math.floor ( Math.random () * window.innerWidth - 150 ) ) + "px"
+          return Math.max ( 10, Math.floor ( Math.random () * window.innerWidth - 100 ) ) + "px"
       },
       randomY: function () {
           return Math.max ( 50, Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) ) + 'px'
