@@ -12,7 +12,7 @@ new Vue ({
           return Math.max ( 10, Math.floor ( Math.random () * window.innerWidth - 150 ) ) + "px"
       },
       randomY: function () {
-          return Math.max ( 50, Math.floor ( Math.random () * ( window.innerHeight - 200 ) ) ) + 'px'
+          return Math.max ( 50, Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) ) + 'px'
       },
       getPictures: function ( sourceURL, theData ) {
     	    this.$http.get( sourceURL ).then ( response => {
