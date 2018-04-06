@@ -1,30 +1,27 @@
 new Vue ({
   data: {
     fones: [],
-    figureBack: "",
-    personagePictures:[],
     personages: [],
     currentBack: "",
     showAside: false
   },
   methods: {
-      randomX: function () {
-          return Math.max ( 10, Math.floor ( Math.random () * window.innerWidth - 100 ) ) + "px"
-      },
-      randomY: function () {
-          return Math.max ( 50, Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) ) + 'px'
-      },
+      randomX: () =>
+          Math.floor ( Math.random () * ( window.innerWidth - 100 ) ) + "px",
+      randomY: () =>
+          Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) + 'px',
       getPictures: function ( sourceURL, theData ) {
     	    this.$http.get( sourceURL ).then ( response => {
-    	      if ( theData === "personages" ) {
-    	        for ( var i in response.body ) {
-                  this.personages.push ({
-                      url: response.body [i],
-                      x: this.randomX (),
-                      y: this.randomY ()
-                  })
-              }
-    	      } else this [ theData ] = response.body
+            this [ theData ] = response.body
+            if ( theData === "personages" ) {
+              this.personages = this.personages.map ( el =>
+                                    ({
+                                          url: el,
+                                          x: this.randomX (),
+                                          y: this.randomY ()
+                                    })
+              )
+            }
     	    })
       },
       setBack: function ( ev ) {
@@ -41,5 +38,8 @@ new Vue ({
   created: function () {
     this.getPictures ( 'json/fones.json', 'fones' )
     this.getPictures ( 'json/personages.json', 'personages' )
+  },
+  components: {
+    'instructions': Instructions
   }
 }).$mount("#vueApp")

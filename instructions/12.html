@@ -1,0 +1,71 @@
+﻿<h3>Выбор фонового изображения. Кнопка-активатор</h3>
+<p>Как помните, в реактивном объекте <b>data</b> экземпляра Vue есть свойство <b>fones</b>, которое является массивом ссылок на фоновые изображения, и свойство <b>currentBack</b>, в котором хранится ссылка на текущее фоновое изображение, отображаемое в представлении</p>
+<p>Задача - обеспечить возможность выбирать фоновое изображение из массива <b>fones</b>, помещать выбранное значение в реактивную переменную <b>currentBack</b>, а остальное сделает реактивная система Vue.js</p>
+<p>Вернемся к разметке ( файл <b>index.html</b> ) и вставим в контейнер приложения новый элемент - <b>nav</b> с классом <b>navi</b></p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          <strong>&lt;nav class = "navi">
+          &lt;/nav></strong>
+          &lt;div class = "figure"
+               :style = '{ backgroundImage: currentBack }'>
+               &lt;img  v-for = "item in personages"
+                     :key = "item.url"
+                     :src = "item.url"
+                     class = "personage"
+                     :style = "{ top: item.y, left: item.x }"
+                     v-on:click = "changeOrder"
+               >
+          &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>Цель - создать кнопку-активатор, которая будет находиться в левом верхнем углу, при клике на которой будет появляться панель с иконками фоновых картинок из массива <b>fones</b></p>
+<p>При клике на какой-либо иконке значение переменной <b>currentBack</b> должно меняться на значение соответствующего элемента массива <b>fones</b></p>
+<p>В файле <b>css/styles.css</b> ) создадим класс <b>navi</b></p>
+<pre class = "snippet">
+.navi {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    bottom: 0;
+    z-index:200;
+}
+</pre>
+<p>Этот класс обеспечит положение кнопки-активатора в левом верхнем углу приложения</p>
+<p>Теперь нужно создать саму кнопку-активатор</p>
+<p>В принципе, не так важно, будет ли это элемент <b>button</b>, или кликабельное изображение / символ</p>
+<p>Чтобы не подключать полностью библотеку <b>Material Icons</b>, воспользуемся уже имеющемся в нашем распоряжении файлом <b>css/photo_library.svg</b></p>
+<p>Вы можете использовать альтернативные изображения иконок <b>css/menu.svg</b>, <b>css/style.svg</b> или <b>css/dashboard.svg</b></p>
+<p>Итак, вставим изображение иконки в нашу разметку ( файл <b>index.html</b> ):</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          &lt;nav class = "navi">
+            <strong>&lt;img src = "css/photo_library.svg" class = "button"></strong>
+          &lt;/nav>
+          &lt;div class = "figure"
+               :style = '{ backgroundImage: currentBack }'>
+               &lt;img  v-for = "item in personages"
+                     :key = "item.url"
+                     :src = "item.url"
+                     class = "personage"
+                     :style = "{ top: item.y, left: item.x }"
+                     v-on:click = "changeOrder"
+               >
+          &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>Очевидно, нужно создать класс <b>button</b> для иконки активатора, для чего переключимся на файл <b>css/styles.css</b> и добавим к его содержимому следующее:</p>
+<pre class = "snippet">
+  .button {
+      cursor: pointer;
+      width: 36px;
+      background-color: #558855;
+      padding: 4px;
+      border-radius: 4px;
+      box-shadow: 3px 3px 5px #000000aa;
+  }
+</pre>
+<p>Нужно сделать иконку активатора кликабельной, чем мы и займемся далее</p>

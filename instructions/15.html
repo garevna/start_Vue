@@ -1,0 +1,44 @@
+﻿<h3>Иконки фоновых изображений</h3>
+<p>Элемент <b>aside</b> нужно заполнить уменьшенными изображениями из массива <b>fones</b></p>
+<p>Создадим класс <b>foneIco</b> в файле <b>css/styles.css</b>:</p>
+<pre class = "snippet">
+  .foneIco {
+      display: block;
+      margin-top: 5px;
+      width: 80px;
+  }
+</pre>
+<p>Теперь можно использовать этот класс при вставке изображений в разметку ( <b>index.html</b> )</p>
+<p>Для этого мы будем использовать уже знакомые нам директивы Vue.js <b>v-for</b> и <b>v-bind</b>:</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          &lt;nav class = "navi">
+              &lt;img src = "css/photo_library.svg" class = "button"
+                                @click = "showAside = !showAside"
+              >
+              &lt;transition name = "aside">
+                  &lt;aside class = "aside" v-if = "showAside">
+                      <strong>&lt;img  v-for = "( item, index ) in fones"
+                            :src = "item"
+                            :key = "index"
+                            class = "foneIco"
+                      ></strong>
+                  &lt;/aside>
+              &lt;/transition>
+          &lt;/nav>
+          &lt;div class = "figure"
+               :style = '{ backgroundImage: currentBack }'>
+               &lt;img  v-for = "item in personages"
+                     :key = "item.url"
+                     :src = "item.url"
+                     class = "personage"
+                     :style = "{ top: item.y, left: item.x }"
+                     v-on:click = "changeOrder"
+               >
+          &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>Отлично! Наша панель выезжает при клике на активаторе, и в ней отображаются все фоновые изображения из массива <b>fones</b></p>
+<p>Осталось совсем чуть-чуть: сделать так, чтобы при клике на изображении в панели <b>aside</b> менялась фоновая картинка нашего SPA и панель <b>aside</b> задвигалась влево</p>

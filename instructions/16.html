@@ -1,0 +1,78 @@
+﻿<h3>Динамическое изменение фонового изображения</h3>
+<p>Очевидно, нам придется создать еще один метод экземпляра Vue. Давайте назовем его <b>setBack</b> и запишем окончательный вариант файла <b>js/script.js</b></p>
+<pre class = "snippet">
+new Vue ({
+     data: {
+         fones: [],
+         personages: [],
+         currentBack: "",
+         showAside: false
+     },
+     methods: {
+         randomX: () =>
+              Math.floor ( Math.random () * ( window.innerWidth - 100 ) ) + "px",
+         randomY: () =>
+              Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) + 'px',
+         getPictures: function ( sourceURL, theData ) {
+              this.$http.get( sourceURL )
+                  .then ( response => {
+                      this [ theData ] = response.body
+                      if ( theData === "personages" ) {
+                          this.personages = this.personages.map ( el =>
+                                      ({
+                                            url: el,
+                                            x: this.randomX (),
+                                            y: this.randomY ()
+                                      })
+                          )
+                      }
+                  })
+         },
+         <strong>setBack: function ( ev ) {
+              this.currentBack = "url(" + ev.target.src + ")"
+              this.showAside = false
+         },</strong>
+         changeOrder: function () {
+              for ( var i in this.personages ) {
+                   this.personages [ i ].x = this.randomX ()
+                   this.personages [ i ].y = this.randomY ()
+              }
+         }
+     },
+     created: function () {
+         this.getPictures ( 'json/fones.json', 'fones' )
+         this.getPictures ( 'json/personages.json', 'personages' )
+     }
+}).$mount("#vueApp")
+</pre>
+<p>Теперь мы готовы завершить работу и над файлом разметки <b>index.html</b>. Финальный вариант будет таким:</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          &lt;nav class = "navi">
+              &lt;img src = "css/photo_library.svg" class = "button" @click = "showAside = !showAside">
+              &lt;transition name = "aside">
+                  &lt;aside class = "aside" v-if = "showAside">
+                      &lt;img  v-for = "( item, index ) in fones"
+                            :src = "item"
+                            :key = "index"
+                            class = "foneIco"
+                            <strong>@click = "setBack"</strong>
+                      >
+                  &lt;/aside>
+              &lt;/transition>
+          &lt;/nav>
+          &lt;div class = "figure"
+               :style = '{ backgroundImage: currentBack }'>
+               &lt;img  v-for = "item in personages"
+                     :key = "item.url"
+                     :src = "item.url"
+                     class = "personage"
+                     :style = "{ top: item.y, left: item.x }"
+                     v-on:click = "changeOrder"
+               >
+          &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>Приложение готово. Можно делать <b>commit</b> и <b>push</b> на <b>remote</b></p>

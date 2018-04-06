@@ -1,0 +1,85 @@
+﻿<h3>Фоновое изображение. Директива v-bind</h3>
+
+<p>Теперь, когда у нас уже есть реактивные данные, попробуем их вывести</p>
+
+<p>Нам нужен динамически обновляемый фон</p>
+<p>Обновление фона должно происходить при выборе пользователем фоновой картинки из предлагаемого "ассортимента" фоновых изображений</p>
+<p>При этом мы работаем только с моделью, и не изменяем DOM напрямую</p>
+
+<p>Для начала переключимся на файл <b>styles.css</b> и создадим класс для элемента, который будет контейнером для персонажей</p>
+<pre class = "snippet">
+  .figure {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background-image: url();
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+  }
+</pre>
+<p>Контейнер будет с фоновой картинкой ( <b>background-image</b> ), и мы хотим, чтобы картинку можно было поменять</p>
+<p>Но для начала вставим контейнер с классом <b>figure</b> в разметку файла <b>index.html</b>, и обязательно внутри элемента, на котором смонтирован экземпляр Vue</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          &lt;div class = "figure">
+          &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>чтобы обеспечить возможность динамически менять <b>background-image</b> элемента-контейнера, мы воспользуемся директивами Vue.js</p>
+<p>По сути, директивы Vue.js выступают в роли атрибутов тегов, но с расширенным функционалом</p>
+<p>Одной из наиболее часто используемых директив Vue.js является директива <b>v-bind</b>. Она позволяет связать данные модели с элементом DOM</p>
+<p>Важно: директива <b>v-bind</b> позволяет связывать элемент с реактивными данными модели, а именно такие данные и находятся в объекте <b>data</b> экземпляра Vue</p>
+<p>Давайте введем в объект <b>data</b> новое реактивное свойство <b>currentBack</b> и поместим в него ссылку на любое изображение:</p>
+<pre class = "snippet">
+  new Vue ({
+    data: {
+      <strong>currentBack: "https://images.pexels.com/photos/41102/pexels-photo-41102.jpeg",</strong>
+      fones: [],
+      personages: []
+    },
+    methods: {
+        getPictures: function ( sourceURL, theData ) {
+      	    this.$http.get( sourceURL ).then ( response => {
+                this [ theData ] = response.body
+      	    })
+        }
+    },
+    created: function () {
+        this.getPictures ( 'json/fones.json', 'fones' )
+        this.getPictures ( 'json/personages.json', 'personages' )
+    }
+  }).$mount( "#vueApp" )
+</pre>
+<p>В дальнейшем мы будем менять значение свойства <b>currentBack</b>, и представление будет динамически обновляться</p>
+
+<p>Теперь вернемся к файлу <b>index.html</b> и немного подкорректируем разметку, используя директиву <b>v-bind</b>:</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+        &lt;div class = "figure"
+             <strong>v-bind:style = '{ backgroundImage: currentBack }'></strong>
+        &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>С помощью директивы <b>v-bind</b> мы связали свойство <b>style</b> элемента DOM с объектом <b>{ backgroundImage: currentBack }</b></p>
+<p>Значение свойства <b>backgroundImage</b> этого объекта определяется переменной модели <b>currentBack</b></p>
+<p>Таким образом, объект <b>style</b> элемента теперь динамически связан переменной модели и будет обновляться при изменении ее значения</p>
+
+<p>Поскольку директива <b>v-bind</b> используется очень часто, у нее существует сокращенный вариант:</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+        &lt;div class = "figure"
+             <strong>:style = '{ backgroundImage: currentBack }'></strong>
+        &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>Теперь можно менять значение <b>currentBack</b>, и представление будет реактивно обновляться</p>
+<p>Однако нам нужно, чтобы значение <b>currentBack</b> выбиралось из массива <b>fones</b>. Но этим мы займемся чуть позже, а пока выведем на сцену персонажей</p>

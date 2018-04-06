@@ -1,0 +1,83 @@
+﻿<h3>Добавление свойств</h3>
+
+<p>Вернемся к файлу <b>script.js</b> и добавим два метода в объект <b>methods</b> экземпляра Vue:</p>
+<pre class = "snippet">
+  new Vue ({
+    data: {
+        currentBack:0,
+        fones: [],
+        personages: []
+    },
+    methods: {
+        getPictures: function ( sourceURL, theData ) {
+          this.$http.get( sourceURL ).then ( response => {
+              this [ theData ] = response.body
+          })
+        },
+        <strong>randomX: () =>
+            Math.floor ( Math.random () * ( window.innerWidth - 100 ) ) + "px",
+        randomY: () =>
+            Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) + 'px'</strong>
+    },
+    created: function () {
+        this.getPictures ( 'json/fones.json', 'fones' )
+        this.getPictures ( 'json/personages.json', 'personages' )
+    }
+  }).$mount( "#vueApp" )
+</pre>
+<small>
+<p>Если кто-то из вас недостаточно хорошо знаком с синтаксисом стрелочных функций, можно использовать обычные:</p>
+<pre class = "snippet">
+      randomX: function () {
+          return Math.floor ( Math.random () * ( window.innerWidth - 100 ) ) + "px"
+      },
+      randomY: function () {
+          return Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) + 'px'
+      }
+</pre>
+</small>
+<p>Вы уже, наверное, догадались, что эти два метода вычисляют случайные координаты в пределах viewport, где <b>window.innerWidth</b> - ширина,
+а <b>window.innerHeight</b> - высота видимой части окна браузера</p>
+<p>Нам нужно добавить каждому элементу массива <b>personages</b> координаты, т.е. свойства <b>x</b> и <b>y</b></p>
+<p>Можно использовать метод <b>map</b> для преобразования элементов массива <b>personages</b> в объекты со свойствами <b>url</b>, <b>x</b> и <b>y</b></p>
+<pre class = "snippet">
+  this.personages = this.personages.map ( el => ({
+                              url: el,
+                              x: this.randomX (),
+                              y: this.randomY ()
+                        })
+  )
+</pre>
+<p>Создадим метод <b>setCoordinates</b>, куда и поместим этот код</p>
+<pre class = "snippet">
+new Vue ({
+    data: {
+        currentBack: 0,
+        fones: [],
+        personages: []
+    },
+    methods: {
+        getPictures: function ( sourceURL, theData ) {
+            this.$http.get( sourceURL ).then ( response => {
+                this [ theData ] = response.body
+            })
+        },
+        randomX: () =>
+            Math.floor ( Math.random () * ( window.innerWidth - 100 ) ) + "px",
+        randomY: () =>
+            Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) + 'px',
+        <strong>setCoordinates: function () {
+            this.personages = this.personages.map ( el => ({
+                                    url: el,
+                                    x: this.randomX (),
+                                    y: this.randomY ()
+                              }))
+        }</strong>
+    },
+    created: function () {
+              this.getPictures ( 'json/fones.json', 'fones' )
+              this.getPictures ( 'json/personages.json', 'personages' )
+    }
+}).$mount( "#vueApp" )
+</pre>
+<p>Осталось определимся с тем, когда нам нужно вызвать метод <b>setCoordinates</b></p>

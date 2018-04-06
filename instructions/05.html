@@ -1,0 +1,28 @@
+﻿<h3>Хуки жизненного цикла</h3>
+
+<p>Итак, мы создали метод <b>getPictures</b></p>
+<p>Открытым остался вопрос, когда же вызвать этот метод</p>
+<p>Тут следует сказать, что объект экземпляра Vue имеет хуки жизненного цикла, и у нас есть возможность "повесить" колбэки на любой хук</p>
+<p><small>* Хук ( hook ) — это пусковой механизм, срабатывающий, когда происходит определенное событие в процессе генерации страницы</small></p>
+<p>"Повесим" обработчика на хук <b>created</b>, когда модель уже создана, но еще не смонтирована:</p>
+<pre class = "snippet">
+new Vue ({
+    data: {
+        fones: [],
+        personages: []
+    },
+    methods: {
+        getPictures: function ( sourceURL, theData ) {
+      	    this.$http.get( sourceURL ).then ( response => {
+                this [ theData ] = response.body
+      	    })
+        }
+    },
+    <strong>created: function () {
+        this.getPictures ( 'json/fones.json', 'fones' )
+        this.getPictures ( 'json/personages.json', 'personages' )
+    }</strong>
+}).$mount( "#vueApp" )
+</pre>
+<p>Теперь, когда экземпляр будет создан, на сервер будут отправлены запросы на получение данных из файлов <b>json/fones.json</b> и <b>json/personages.json</b></p>
+<p>Когда данные будут получены, они будут помещены в свойства <b>fones</b> и <b>personages</b> объекта <b>data</b> экземпляра Vue</p>

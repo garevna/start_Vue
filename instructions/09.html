@@ -1,0 +1,56 @@
+﻿<h3>Координаты персонажей</h3>
+<p>Итак, мы создали метод <b>setCoordinates</b>, преобразующий наш исходный массив <b>personages</b></p>
+<p>Открытым остался вопрос, когда же вызвать этот метод. Ведь если данные еще не получены с сервера, то массив <b>personages</b> будет пустым</p>
+<p>Нам нужно вызвать этот метод тогда, когда промис в функции <b>getPictures</b> завершится и сработает колбэк</p>
+<p>Добавим всего одну строчку кода в колбэк промиса - вызовем <b>setCoordinates</b>, если был загружен массив <b>personages</b></p>
+<pre class = "snippet">
+new Vue ({
+    data: {
+        currentBack: 0,
+        fones: [],
+        personages: []
+    },
+    methods: {
+        getPictures: function ( sourceURL, theData ) {
+            this.$http.get( sourceURL ).then ( response => {
+                this [ theData ] = response.body
+                <strong>if ( theData === "personages" ) this.setCoordinates ()</strong>
+            })
+        },
+        randomX: () =>
+            Math.floor ( Math.random () * ( window.innerWidth - 100 ) ) + "px",
+        randomY: () =>
+            Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) + 'px',
+        setCoordinates: function () {
+            this.personages =
+                  this.personages.map ( el => ({
+                                    url: el,
+                                    x: this.randomX (),
+                                    y: this.randomY ()
+            }))
+        }
+    },
+    created: function () {
+        this.getPictures ( 'json/fones.json', 'fones' )
+        this.getPictures ( 'json/personages.json', 'personages' )
+    }
+}).$mount( "#vueApp" )
+</pre>
+<p>Теперь при загрузке данных из файла <b>json/personages.json</b> они сразу будут преобразованы в нужную нам форму, но <b>(!)</b> предыдущая разметка перестанет работать</p>
+<p>Вернемся к разметке ( <b>index.html</b> ) и изменим ее с учетом новой структуры массива <b>personages</b>:</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          &lt;div class = "figure"
+               :style = '{ backgroundImage: currentBack }'>
+              &lt;img  v-for = "item in personages"
+                    :key = "item.<strong>url</strong>"
+                    :src = "item.<strong>url</strong>"
+                    class = "personage"
+              >
+        &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>Однако у каждого элемента <b>item</b> массива <b>personages</b> есть еще свойства <b>item.x</b> и <b>item.y</b>, которые пока еще не задействованы</p>
+<p>Сделаем это далее</p>

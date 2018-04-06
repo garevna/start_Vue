@@ -1,0 +1,43 @@
+﻿<h3>Получение данных с сервера</h3>
+<p>Данные для нашего приложения хранятся в файлах <b>json/fones.json</b> и <b>json/personages.json</b></p>
+<p>Для получения данных с сервера у нас уже подключен плагин <b>vue-resource.js</b></p>
+<p>Он подключается к приложению как обычная библиотека тегом <b>script</b> в <b>head</b> файла <b>index.html</b></p>
+<p><b>&lt;script src = "https://cdn.jsdelivr.net/npm/vue-resource@1.3.4">&lt;/script></b></p>
+<p><small>( он должен следовать после тега скрипта, подключающего библиотеку Vue.js )</small></p>
+<p><b>vue-resource</b> автоматически встраивается во Vue.js, и теперь мы можем вызвать его как метод экземпляра Vue <b>this.$http</b></p>
+<p>Для получения данных с сервера мы будем использовать метод <b>this.$http.get</b></p>
+<p><b>this.$http.get</b> возвращает промис, и при благополучном завершении операции парсит ответ сервера ( JSON.parse ), т.е. мы получим не JSON-строку, а уже готовые данные</p>
+<p>Пример функции, использующей метод <b>$http.get</b> для получения данных из файла <b>sourceURL</b> в свойство <b>theData</b> объекта <b>data</b> экземпляра Vue:</p>
+<pre class = "snippet">
+  getPictures: function ( sourceURL, theData ) {
+      this.$http.get( sourceURL ).then ( response => {
+          this [ theData ] = response.body
+      })
+  }
+</pre>
+<p>Колбэку, обрабатывающему успешное завершение операции, передается ответ сервера в переменной <b>response</b></p>
+<p>"Тело" ответа ( содержимое файла после парсинга ) будет в переменной <b>response.body</b></p>
+<p>При загрузке файлов <b>json/fones.json</b> и <b>json/personages.json</b> с помощью функции <b>getPictures</b> в <b>response.body</b> будут массивы ссылок на изображения</p>
+<p>Итак, у нас есть функция <b>getPictures</b>, и нам нужно ее куда-то "пристроить"</p>
+
+<h3>Методы экземпляра Vue</h3>
+<p>Познакомимся с еще одним унаследованным свойством экземпляра Vue - <b>methods</b></p>
+<p>Свойство <b>methods</b> - это объект, каждое свойство которого является именованной функцией</p>
+<p>Добавим функцию <b>getPictures</b> в методы экземпляра Vue:</p>
+<pre class = "snippet">
+new Vue ({
+  data: {
+    fones: [],
+    personages: []
+  },
+  <strong>methods: {
+      getPictures: function ( sourceURL, theData ) {
+    	    this.$http.get( sourceURL ).then ( response => {
+              this [ theData ] = response.body
+    	    })
+      }
+  }<strong>
+}).$mount("#vueApp")
+</pre>
+<p>Теперь мы можем вызывать метод <b>getPictures</b> экземпляра Vue как <b>this.getPictures</b></p>
+<p>Осталось определиться с тем, когда вызвать <b>this.getPictures</b></p>

@@ -1,0 +1,79 @@
+﻿<h3>Обработка событий. Директива v-on</h3>
+<p>Продолжаем работать с разметкой файла <b>index.html</b></p>
+<p>Давайте сделаем так, чтобы элементы <b>img</b>, отображающие наших персонажей, реагировали на событие <b>click</b></p>
+<p>В этом нам поможет директива <b>v-on</b></p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          &lt;div class = "figure"
+               :style = '{ backgroundImage: currentBack }'>
+               &lt;img  v-for = "item in personages"
+                     :key = "item.url"
+                     :src = "item.url"
+                     class = "personage"
+                     :style = "{ top: item.y, left: item.x }"
+                     <strong>v-on:click = "changeOrder"</strong>
+               >
+          &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>C помощью директивы <b>v-on</b> мы связываем событие <b>click</b> элемента <b>img</b> с методом <b>changeOrder</b> экземпляра Vue, которого у нас пока еще нет</p>
+<small>
+  <p>Директива <b>v-on</b> также имеет краткую форму <strong>@click="changeOrder"</strong></p>
+</small>
+
+<p>Вернемся к файлу <b>script.js</b> и создадим метод <b>changeOrder</b></p>
+
+<pre class = "snippet">
+new Vue ({
+    data: {
+        currentBack: 0,
+        fones: [],
+        personages: []
+    },
+    methods: {
+        getPictures: function ( sourceURL, theData ) {
+            this.$http.get( sourceURL ).then ( response => {
+                this [ theData ] = response.body
+                if ( theData === "personages" ) this.setCoordinates ()
+            })
+        },
+        randomX: () =>
+            Math.floor ( Math.random () * ( window.innerWidth - 100 ) ) + "px",
+        randomY: () =>
+            Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) + 'px',
+        setCoordinates: function () {
+            this.personages =
+                  this.personages.map ( el => ({
+                                    url: el,
+                                    x: this.randomX (),
+                                    y: this.randomY ()
+            }))
+        },
+        <strong>changeOrder: function () {
+            for ( var i in this.personages ) {
+                this.personages [ i ].x = this.randomX ()
+                this.personages [ i ].y = this.randomY ()
+            }
+        }</strong>
+    },
+    created: function () {
+        this.getPictures ( 'json/fones.json', 'fones' )
+        this.getPictures ( 'json/personages.json', 'personages' )
+    }
+}).$mount( "#vueApp" )
+</pre>
+
+<p>Готово! Теперь клик на любом персонаже будет заставлять их всех перемещаться в новую позицию на экране</p>
+<p>Анимация перемещений обеспечена нами заранее, поскольку мы установили css-свойство <b>transition</b> для класса <b>personage</b>:</p>
+<pre class = "snippet">
+  .personage {
+      position: absolute;
+      <strong>transition: all 2s;</strong>
+      height: 100px;
+      top: 0;
+      left: 0;
+      cursor: pointer;
+  }
+</pre>

@@ -1,0 +1,67 @@
+.instruction-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background-image: url(images/help.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+    cursor: pointer;
+}
+.instruction-content p { color: #999; }
+.instruction-content small { color: #555; }
+.instruction-content b { color: #b84; }
+.instruction-content strong { color: #99f; }
+.instruction-content em { color: #99c; }
+.instruction-content h3 { color: #9c7; }
+.instruction-menu {
+    position: absolute;
+    z-index: 201;
+    top: 50px;
+    right: 10px;
+    padding:0;
+    background-color: #dde;
+    transition: all 0.5s;
+}
+.menu-item {
+    padding:8px 20px;
+    margin:0;
+    cursor: pointer;
+}
+.menu-item:hover {
+  background-color: #558;
+  color: #dde;
+}
+.snippet {
+    font-family: monospace, sans-serif;
+    color: #77b;
+}
+a {
+  text-decoration: none;
+}
+a img, p img {
+  vertical-align: -15px;
+}
+.instruction-content {
+    position: fixed;
+    top:10%;
+    left:10%;
+    bottom:10%;
+    right:10%;
+    overflow-y: auto;
+    background-color: #000;
+    border: solid 1px #ddd;
+    padding: 15px 25px;
+    box-shadow: 10px 10px 18px #00000090;
+    transition: all 1s;
+}
+.help-enter, .help-leave-to {
+    opacity:0;
+    transform: translate(100%);
+}
+.menu-enter, .menu-leave-to {
+    opacity:0;
+    transform: translateY(-100%)
+}

@@ -1,0 +1,126 @@
+﻿<h3>Панель навигации</h3>
+
+<p>Теперь, когда у нас есть иконка активатора, прежде, чем сделать ее кликабельной, создадим панель навигации, которую и будет активировать наша "кнопка"</p>
+<p>Для этого в файле <b>index.html</b> добавим элемент <b>aside</b> с классом <b>aside</b>:</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          &lt;nav class = "navi">
+              &lt;img src = "css/photo_library.svg" class = "button">
+              <strong>&lt;aside class = "aside">
+              &lt;/aside></strong>
+          &lt;/nav>
+          &lt;div class = "figure"
+               :style = '{ backgroundImage: currentBack }'>
+               &lt;img  v-for = "item in personages"
+                     :key = "item.url"
+                     :src = "item.url"
+                     class = "personage"
+                     :style = "{ top: item.y, left: item.x }"
+                     v-on:click = "changeOrder"
+               >
+          &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>Класс <b>aside</b> добавим в файл <b>css/styles.css</b>:</p>
+<pre class = "snippet">
+  .aside {
+      <strong>position: absolute;</strong>
+      height:90%;
+      box-shadow: 5px 5px 10px #00000080;
+      background-color: #333;
+      padding: 0 5px 5px;
+      <strong>transition: all 0.5s;</strong>
+      overflow-Y:auto;
+  }
+</pre>
+<p>Вы можете изменить значения некоторых css-атрибутов класса <b>aside</b>, но обязательно нужно сохранить неизменными выделенные строчки</p>
+<p>Итак, задача - сделать так, чтобы при клике на "кнопке"-активаторе наша панель <b>aside</b> выезжала, а при повторном клике - исчезала</p>
+<p>Поскольку управлять этим процессом мы должны исключительно из модели, не затрагивая реальный DOM, очевидно, нам нужно ввести еще одну переменную логического типа, значение <b>true</b> которой будет означать, что панель <b>aside</b> отображается, а значение <b>false</b> - что панель <b>aside</b> скрыта</p>
+<p>Назовем эту переменную <b>showAside</b> и инициируем ее значением <b>false</b>, чтобы панель не было видно, пока не произойдет клик на "кнопке"-активаторе</p>
+<p>Вернемся к файлу <b>js/script.js</b>:</p>
+<pre class = "snippet">
+new Vue ({
+    data: {
+        currentBack: 0,
+        fones: [],
+        personages: [],
+        <strong>showAside: false</strong>
+    },
+    methods: {
+        getPictures: function ( sourceURL, theData ) {
+            this.$http.get( sourceURL ).then ( response => {
+                this [ theData ] = response.body
+                if ( theData === "personages" ) this.setCoordinates ()
+            })
+        },
+        randomX: () =>
+            Math.floor ( Math.random () * ( window.innerWidth - 100 ) ) + "px",
+        randomY: () =>
+            Math.floor ( Math.random () * ( window.innerHeight - 100 ) ) + 'px',
+        setCoordinates: function () {
+            this.personages =
+                  this.personages.map ( el => ({
+                                    url: el,
+                                    x: this.randomX (),
+                                    y: this.randomY ()
+            }))
+        }
+    },
+    created: function () {
+        this.getPictures ( 'json/fones.json', 'fones' )
+        this.getPictures ( 'json/personages.json', 'personages' )
+    }
+}).$mount( "#vueApp" )
+</pre>
+<p>Теперь вернемся к файлу <b>index.html</b> и добавим директиву условного рендеринга <b>v-if</b> элементу <b>aside</b>:</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          &lt;nav class = "navi">
+              &lt;img src = "css/photo_library.svg" class = "button">
+              &lt;aside class = "aside" <strong>v-if = "showAside"</strong>>
+              &lt;/aside>
+          &lt;/nav>
+          &lt;div class = "figure"
+               :style = '{ backgroundImage: currentBack }'>
+               &lt;img  v-for = "item in personages"
+                     :key = "item.url"
+                     :src = "item.url"
+                     class = "personage"
+                     :style = "{ top: item.y, left: item.x }"
+                     v-on:click = "changeOrder"
+               >
+          &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>Директива <b>v-if</b> позволяет управлять процессом вставки или удаления элемента в реальном DOM в зависимости от значения реактивной переменной модели <b>showAside</b></p>
+<p>Если значением <b>showAside</b> будет <b>true</b>, то элемент будет смонтирован в DOM</p>
+<p>Если значением <b>showAside</b> будет <b>false</b>, то элемент будет удален из DOM</p>
+<p>Теперь нужно сделать так, чтобы при клике на активаторе значение <b>showAside</b> менялось на противоположное:</p>
+<pre class = "snippet">
+  &lt;body>
+      &lt;div id = "vueApp">
+          &lt;nav class = "navi">
+              &lt;img src = "css/photo_library.svg" class = "button"
+                                <strong>@click = "showAside = !showAside"</strong>
+              >
+                  &lt;aside class = "aside" v-if = "showAside">
+                  &lt;/aside>
+          &lt;/nav>
+          &lt;div class = "figure"
+               :style = '{ backgroundImage: currentBack }'>
+               &lt;img  v-for = "item in personages"
+                     :key = "item.url"
+                     :src = "item.url"
+                     class = "personage"
+                     :style = "{ top: item.y, left: item.x }"
+                     v-on:click = "changeOrder"
+               >
+          &lt;/div>
+      &lt;/div>
+  &lt;/body>
+</pre>
+<p>Готово! При клике на активаторе наша панель появляется и исчезает. Но нам нужно, чтобы она плавно выезжала, чем мы и займемся далее</p>
